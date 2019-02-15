@@ -6,7 +6,7 @@ class TableBody extends Component {
         return data.map((row, i) => (
             <tr key={i}>
                 {columns.map(cell => {
-                    if (cell === Number) {
+                    if (!isNaN(row[cell])) {
                         return <div className='row'>
                             <td>{row[cell]}</td>
                         </div>
