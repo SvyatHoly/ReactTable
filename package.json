@@ -3,9 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "fast-sort": "^1.5.5",
+    "memoize-one": "^5.0.0",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
-    "react-scripts": "2.1.5"
+    "react-scripts": "2.1.5",
+    "react-table": "^6.9.2",
+    "sort-multidimensional-array-func": "^1.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
