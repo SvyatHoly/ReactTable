@@ -1,0 +1,109 @@
+
+tr:nth-child(even) {
+  background-color: #1e252c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+th {
+  padding: 20px;
+}
+
+td {
+  padding: 5px 20px 5px 5px;
+  width: auto;
+}
+
+html, body {
+  margin: 0;
+  color: #e7e8e9;
+  background-color: #1b2328;
+  font-family: sans-serif;
+  justify-content: center;
+}
+
+button {
+  padding: 0;
+  border: none;
+  background: none;
+  color: #7f93a6
+}
+
+table {
+  border-spacing: 0;
+  border: none;
+  padding: 10px 10px 10px 50px ;
+
+}
+
+.chart {
+  display: grid;
+  grid-template-columns: repeat(200, auto);
+  grid-template-rows: repeat(1, auto);
+  grid-column-gap: 5px;
+  height: 4vh;
+  position: relative;
+  width: 70vw;
+  padding: 5px 50px;
+  justify-content: center;
+  align-items: end;
+}
+
+[class*="bg"] {
+  border-radius: 10px 10px 10px 10px;
+  transition: all .6s ease;
+  background-color: #232b32;
+  box-shadow: 0 0 1px #1b2328;
+  grid-row: 1 / 1;
+  align-self: stretch;
+  position: relative;
+}
+[class*="bar"] {
+  border-radius: 10px 10px 10px 10px;
+  grid-column-start: 100;
+  box-shadow: 0 0 3px #212827;
+  grid-row: 1 / 1;
+  align-self: stretch;
+  position: relative;
+
+}
+
+[class*="bg--"] {
+  grid-column-start: 100;
+  grid-column-end: 200;
+  background-color: #232b32;
+}
+[class*="bg-+"] {
+    grid-column-start: 1;
+    grid-column-end: 100;
+    background-color: #232b32;
+}
+.numbers {
+  text-align: center;
+}
+
+
+$totalRows: 101;
+
+@mixin chartValue($data) {
+  grid-column-end: $totalRows + $data;
+  background: linear-gradient(to right, #56b16c, #4b9b62);
+}
+
+@mixin chartValueNeg($data) {
+  grid-column-start: $totalRows - $data;
+  grid-column-end: $totalRows;
+  background: linear-gradient(to left, #ca5f64, #c54345);
+}
+
+@for $i from 0 through $totalRows {
+  .bar--#{$i} {
+    @include chartValue($i);
+  }
+  .bar-#{$i} {
+    @include chartValueNeg($i);
+  }
+}
+.bg-\+0 { display: none; }

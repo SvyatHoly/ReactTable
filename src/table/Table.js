@@ -5,15 +5,15 @@ import TableHead from "./TableHead";
 class Table extends Component {
 
     render() {
-        const data = this.props.data;
+        const {data, modMax, sortBy} = this.props;
         const columns = Object.keys(data[0]);
         return (
             <table>
                 <thead>
-                <TableHead columns={columns} sortBy={this.props.sortBy}/>
+                <TableHead columns={columns} sortBy={sortBy}/>
                 </thead>
                 <tbody>
-                <TableBody columns={columns} data={data}/>
+                <TableBody columns={columns} modMax={modMax} data={data}/>
                 </tbody>
             </table>
         );

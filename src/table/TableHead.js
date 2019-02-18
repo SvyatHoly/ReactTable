@@ -6,7 +6,7 @@ class TableHead extends Component {
         return (
             <tr key='key'>
                 {columns.map(header => {
-                    return <th>
+                    return <th className='text'>
                         <button onClick={() => this.props.sortBy(header)}>
                             {header}
                         </button>

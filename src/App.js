@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import SberData from './resources/data.json'
 import Table from "./table/Table";
-import memoize from "memoize-one";
 
 const data = SberData;
 
@@ -13,13 +12,10 @@ class App extends Component {
         this.state = {
             data: data,
             normalData: [{}],
-            filterText: ""
+            modMax: 0,
+            sortDirection: 0
         }
     }
-
-    filter = memoize(
-        (list, filterText) => list.filter(item => item.text.includes(filterText))
-    );
 
     componentDidMount() {
         this.normalizeData();
@@ -27,47 +23,60 @@ class App extends Component {
 
     sortBy = (column) => {
         const {normalData} = this.state;
+        let {sortDirection} = this.state;
 
         function sortByKey(array, key) {
             return array.sort(function (a, b) {
                 const x = a[key];
                 const y = b[key];
-                return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                if (sortDirection === 0) {
+                    return ((x < y) ? -1 : ((x > y) ? 1 : 0));
+                } else {
+                    return ((x > y) ? -1 : ((x < y) ? 1 : 0));
+                }
             });
         }
 
         const sortData = sortByKey(normalData, column);
-
-        console.log(sortData);
+        sortDirection = this.state.sortDirection === 1 ? 0 : 1;
+        console.log(sortDirection);
         this.setState({
             normalData: sortData,
-            filterText: '1'
+            sortDirection
         });
     };
 
     normalizeData = () => {
-        const columnNames = this.state.data.fa.fa_data.axis.r;
-        const dataArray = this.state.data.fa.fa_data.r;
-        const dataAmount = this.state.data.fa.fa_data.r.length;
-        const normalData = [];
-        for (let i = 0; i < dataAmount; i++) {
-            const object = {};
-            dataArray[i].axis.r.forEach((el, index) => {
-                const key = columnNames[index].sAxisName;
-                object[key] = el.sName_RU;
-                object['Отклонение от плана'] = dataArray[i].fDeltaPlan;
-                object['Валюта'] = dataArray[i].sMeasDelta_RU;
-            });
-            normalData.push(object);
-        }
-        return this.setState({normalData});
+        if (this.state.data.fa.fa_data.axis.r!==null &&
+            this.state.data.fa.fa_data.axis.r!==undefined &&
+            this.state.data.fa.fa_data.r!== null &&
+            this.state.data.fa.fa_data.r!== undefined) {
+            const columnNames = this.state.data.fa.fa_data.axis.r;
+            const dataArray = this.state.data.fa.fa_data.r;
+            const dataAmount = this.state.data.fa.fa_data.r.length;
+            const normalData = [];
+            let modMax = 0;
+            for (let i = 0; i < dataAmount; i++) {
+                const object = {};
+                dataArray[i].axis.r.forEach((el, index) => {
+                    const key = columnNames[index].sAxisName.toUpperCase();
+                    object[key] = el.sName_RU;
+                });
+                object['ВАЛЮТА'] = dataArray[i].sMeasDelta_RU;
+                object['ОТКЛОНЕНИЕ ОТ ПЛАНА, П.П.'] = dataArray[i].fDeltaPlan;
+                modMax = Math.max(modMax, Math.abs(dataArray[i].fDeltaPlan));
+
+                normalData.push(object);
+            }
+            return this.setState({normalData, modMax});
+        } else (console.log('data is undefined'))
     };
 
     render() {
         return (
             <div className='App'>
                 <div className='container'>
-                <Table data={this.state.normalData} sortBy={this.sortBy}/>
+                    <Table data={this.state.normalData} modMax={this.state.modMax} sortBy={this.sortBy}/>
                 </div>
             </div>
         );
